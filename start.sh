@@ -5,7 +5,7 @@ set -euo pipefail
 
 # Constants – adjust these as needed
 BRANCH_NAME="onepi-dsp"           # Branch name to sync with
-TARGET_DIR="/home/theatrebuilding/fiveminutesago/production/2_server"
+TARGET_DIR="/fiveminutesago/production/2_server"
 PYTHON_SCRIPT="server.py"        # Name of the python script to run
 
 # 1. Change directory to the project folder
