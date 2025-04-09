@@ -1,8 +1,10 @@
 #!/bin/bash
+# Exit immediately if a command exits with a non-zero status,
+# treat unset variables as an error and propagate errors in pipelines.
 set -euo pipefail
 
 # Constants – adjust these as needed
-BRANCH_NAME="experimental"           # Branch name to sync with
+BRANCH_NAME="onepi-dsp"           # Branch name to sync with
 TARGET_DIR="fiveminutesago/production/2_server"
 PYTHON_SCRIPT="server.py"        # Name of the python script to run
 
