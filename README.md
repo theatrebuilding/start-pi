@@ -1,0 +1,1 @@
+Eventually we will want to add an optional save file option to this script. Maybe using ffmpeg separate from the gstreamer command or maybe using a gstreamer filesink, meaning that the bash script (start.sh) would need to load different versions of the dame script depending on record true or false.
