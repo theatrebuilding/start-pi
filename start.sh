@@ -3,9 +3,43 @@
 # treat unset variables as an error and propagate errors in pipelines.
 set -euo pipefail
 
+MOUNT_POINT="/mnt/tbdrive"
+DEVICE="/dev/sda1"
+
+# Ensure that the mount point directory exists.
+if [ ! -d "$MOUNT_POINT" ]; then
+  echo "Directory $MOUNT_POINT does not exist, creating it..."
+  sudo mkdir -p "$MOUNT_POINT"
+fi
+
+# Check if the mount point is already in use.
+if ! mountpoint -q "$MOUNT_POINT"; then
+  echo "$MOUNT_POINT is not mounted. Mounting $DEVICE on $MOUNT_POINT..."
+  sudo mount "$DEVICE" "$MOUNT_POINT"
+else
+  echo "$MOUNT_POINT is already mounted."
+  # Get the current mount options for the device.
+  MOUNT_INFO=$(grep "$MOUNT_POINT" /proc/mounts)
+  echo "Current mount info: $MOUNT_INFO"
+  
+  # Check if the mount is read-only.
+  if echo "$MOUNT_INFO" | grep -q "ro,"; then
+    echo "$MOUNT_POINT is mounted as read-only. Remounting as read-write..."
+    sudo mount -o remount,rw "$DEVICE" "$MOUNT_POINT"
+  fi
+fi
+
+# Verify that the mount is now read-write.
+if grep "$MOUNT_POINT" /proc/mounts | grep -q "rw,"; then
+  echo "$MOUNT_POINT is now mounted with read-write permissions."
+else
+  echo "Error: $MOUNT_POINT is not mounted read-write." 1>&2
+  exit 1
+fi
+
 # Constants – adjust these as needed
 BRANCH_NAME="onepi-dsp"           # Branch name to sync with
-TARGET_DIR="/fiveminutesago/production/2_server"
+TARGET_DIR="fiveminutesago/production/2_server"
 PYTHON_SCRIPT="server.py"        # Name of the python script to run
 
 # 1. Change directory to the project folder
@@ -47,3 +81,4 @@ if ! "${PYTHON_CMD[@]}"; then
 fi
 
 echo "Script completed successfully."
+
